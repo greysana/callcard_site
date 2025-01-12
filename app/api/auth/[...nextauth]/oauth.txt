@@ -1,0 +1,147 @@
+import NextAuth from 'next-auth';
+import GoogleProvider from 'next-auth/providers/google';
+import FacebookProvider from 'next-auth/providers/facebook';
+import LinkedInProvider from 'next-auth/providers/linkedin';
+
+export const authOptions = {
+  // Configure OAuth providers here
+  providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    }),
+    FacebookProvider({
+      clientId: process.env.FACEBOOK_CLIENT_ID,
+      clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
+    }),
+    LinkedInProvider({
+      clientId: process.env.LINKEDIN_CLIENT_ID,
+      clientSecret: process.env.LINKEDIN_CLIENT_SECRET,
+    }),
+  ],
+
+  // Callbacks for customizing behavior
+  callbacks: {
+    async signIn({ user, account, profile }) {
+      // Custom logic before signing in (e.g., restrict domains or emails)
+      return true; // Return `true` to proceed or `false` to deny access
+    },
+    async redirect({ url, baseUrl }) {
+      // Customize the redirect URL after login
+      return url.startsWith(baseUrl) ? url : baseUrl;
+    },
+    async session({ session, user, token }) {
+      // Attach custom user data to the session
+      session.user.id = token.sub;
+      return session;
+    },
+    async jwt({ token, user, account, profile }) {
+      // Attach custom fields to the token
+      if (account) {
+        token.accessToken = account.access_token;
+      }
+      return token;
+    },
+  },
+
+  // Optional pages for custom UI
+  pages: {
+    signIn: '/auth/signin', // Custom sign-in page (optional)
+    error: '/auth/error', // Error page (optional)
+  },
+};
+
+export default NextAuth(authOptions);
+
+
+
+
+
+
+
+
+import NextAuth from "next-auth";
+import GoogleProvider from "next-auth/providers/google";
+import FacebookProvider from "next-auth/providers/facebook";
+import LinkedInProvider from "next-auth/providers/linkedin";
+import { connectToDatabase } from "@/lib/mongodb";
+
+import User from "@/models/User";
+import jwt from "jsonwebtoken";
+import { setCookie } from "cookies-next";
+
+export const authOptions = {
+  providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    }),
+    FacebookProvider({
+      clientId: process.env.FACEBOOK_CLIENT_ID,
+      clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
+    }),
+    LinkedInProvider({
+      clientId: process.env.LINKEDIN_CLIENT_ID,
+      clientSecret: process.env.LINKEDIN_CLIENT_SECRET,
+    }),
+  ],
+
+  callbacks: {
+    async signIn({ user, account, profile }: any) {
+      await connectToDatabase();
+
+      try {
+        let existingUser = await User.findOne({ email: user.email });
+
+        if (!existingUser) {
+          existingUser = new User({
+            email: user.email,
+            first_name: profile.given_name || profile.firstName || "",
+            last_name: profile.family_name || profile.lastName || "",
+            photo: user.image || "",
+          });
+
+          await existingUser.save();
+        }
+
+        const token = jwt.sign(
+          { id: existingUser._id, email: existingUser.email },
+          process.env.JWT_SECRET!,
+          { expiresIn: "7d" }
+        );
+
+        setCookie("token", token, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          maxAge: 7 * 24 * 60 * 60, // 7 days
+          path: "/",
+        });
+      } catch (error) {
+        console.error("Error signing in user:", error);
+        return false;
+      }
+
+      return true;
+    },
+    async redirect({ url, baseUrl }: any) {
+      return url.startsWith(baseUrl) ? url : baseUrl;
+    },
+    async session({ session, user, token }: any) {
+      session.user.id = token.sub;
+      return session;
+    },
+    async jwt({ token, user, account, profile }: any) {
+      if (account) {
+        token.accessToken = account.access_token;
+      }
+      return token;
+    },
+  },
+
+  // pages: {
+  //   signIn: "/auth/signin", // Custom sign-in page (optional)
+  //   error: "/auth/error", // Error page (optional)
+  // },
+};
+
+export default NextAuth(authOptions);

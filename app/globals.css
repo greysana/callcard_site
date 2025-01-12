@@ -2,20 +2,368 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+@font-face {
+  font-family: "Poppins";
+  src: url("/fonts/poppins/Poppins-Black.ttf") format("truetype");
+  font-weight: 900;
+  font-style: normal;
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  /* font-family: Arial, Helvetica, sans-serif; */
+  /* font-family: "Poppins", sans-serif; */
+  font-family: var(--font-poppins), sans-serif;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.curved-bottom {
+  clip-path: ellipse(100% 80% at 50% 100%);
+}
+
+@layer components {
+  /* Primary Button */
+  /* .btn-primary {
+    @apply py-2 px-5 bg-violet-500 text-white font-semibold rounded-full shadow-md 
+      hover:bg-violet-700 focus:outline-none focus:ring focus:ring-violet-400 focus:ring-opacity-75;
+  } */
+
+  /* Outline Button */
+  /* .btn-outline {
+    @apply py-2 px-5 border border-violet-500 text-violet-500 font-semibold rounded-full
+      hover:bg-violet-500 hover:text-white focus:outline-none focus:ring focus:ring-violet-400 focus:ring-opacity-75;
+  } */
+  .input-r-border-none-50{
+    @apply text-[.9rem] mx-2 my-3 ring-offset-background rounded-full p-2 px-5 w-[50%] placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1 
+  }
+  .input-r-border-none-100{
+    @apply text-[.9rem] mx-2 my-2 ring-offset-background rounded-full p-2 px-5 w-[100%] placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1
+  }
+  .textarea-r-border-none-100{
+    @apply mx-2 my-2 min-h-[9rem] ring-offset-background rounded-[1.2rem] p-2 px-5 w-[97%] placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1 
+  }
+  /* Card */
+  .card {
+    @apply p-6 bg-white rounded-lg shadow-lg border border-gray-200;
+  }
+
+  .card-header {
+    @apply text-lg font-semibold mb-2;
+  }
+
+  .card-body {
+    @apply text-gray-700;
+  }
+
+  .card-footer {
+    @apply mt-4 flex justify-end;
+  }
+
+  /* Modal */
+  .modal {
+    @apply fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50;
+  }
+
+  .modal-content {
+    @apply bg-white rounded-lg p-6 shadow-lg w-3/4 sm:w-1/2 lg:w-1/3;
+  }
+
+  .modal-header {
+    @apply text-lg font-semibold mb-4;
+  }
+
+  .modal-body {
+    @apply mb-4 text-gray-700;
+  }
+
+  .modal-footer {
+    @apply flex justify-end space-x-4;
+  }
+
+  /* Full-Page Centered Modal */
+  .modal-full-page {
+    @apply fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50;
+  }
+
+  .modal-full-page-content {
+    @apply bg-white w-full h-full md:w-3/4 md:h-3/4 lg:w-1/2 lg:h-1/2 rounded-lg p-6 shadow-lg;
+  }
+
+  /* Alert Box */
+  .alert {
+    @apply px-4 py-3 rounded-lg shadow-md flex items-center;
+  }
+
+  .alert-success {
+    @apply bg-green-100 text-green-700 border border-green-400;
+  }
+
+  .alert-error {
+    @apply bg-red-100 text-red-700 border border-red-400;
+  }
+
+  /* Badge */
+  .badge {
+    @apply inline-block py-1 px-3 rounded-full text-xs font-semibold uppercase;
+  }
+
+  .badge-success {
+    @apply bg-green-500 text-white;
+  }
+
+  .badge-warning {
+    @apply bg-yellow-500 text-white;
+  }
+
+  Input Fields
+  .input {
+    @apply w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-violet-500;
+  }
+
+  /* Checkbox */
+  .checkbox {
+    @apply w-4 h-4 text-violet-500 border-gray-300 rounded focus:ring focus:ring-violet-400;
+  }
+
+  /* Radio Button */
+  .radio {
+    @apply w-4 h-4 text-violet-500 border-gray-300 rounded-full focus:ring focus:ring-violet-400;
+  }
+
+  /* Toggle Switch */
+  .toggle {
+    @apply relative inline-flex items-center cursor-pointer;
+  }
+
+  .toggle-input {
+    @apply sr-only;
+  }
+
+  .toggle-bg {
+    @apply w-11 h-6 bg-gray-200 rounded-full peer-focus:ring-4 peer-focus:ring-violet-400;
+  }
+
+  .toggle-thumb {
+    @apply absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-all;
+  }
+
+  /* Table */
+  .table {
+    @apply min-w-full bg-white border border-gray-200 rounded-lg overflow-hidden shadow-lg;
+  }
+
+  .table-header {
+    @apply bg-gray-100 text-gray-700 uppercase text-xs font-semibold;
+  }
+
+  .table-row {
+    @apply border-b border-gray-200 hover:bg-gray-50;
+  }
+
+  .table-cell {
+    @apply py-4 px-6 text-gray-700;
+  }
+}
+/* Padding and Margin Combinations */
+.pm-xs {
+  @apply p-2 m-2;
+}
+
+.pm-sm {
+  @apply p-4 m-4;
+}
+
+.pm-md {
+  @apply p-6 m-6;
+}
+
+.pm-lg {
+  @apply p-8 m-8;
+}
+
+.pm-xl {
+  @apply p-10 m-10;
+}
+
+/* Padding and Margin with Border-Radius */
+.pmr-xs {
+  @apply p-2 m-2 rounded-md;
+}
+
+.pmr-sm {
+  @apply p-4 m-4 rounded-lg;
+}
+
+.pmr-md {
+  @apply p-6 m-6 rounded-xl;
+}
+
+.pmr-lg {
+  @apply p-8 m-8 rounded-2xl;
+}
+
+.pmr-xl {
+  @apply p-10 m-10 rounded-3xl;
+}
+
+/* Flex Layouts with Padding and Margin */
+.pm-flex-row {
+  @apply flex flex-row gap-4 p-4;
+}
+
+.pm-flex-row-space {
+  @apply flex flex-row justify-between items-center gap-4 p-4;
+}
+
+.pm-flex-col {
+  @apply flex flex-col gap-4 p-4;
+}
+
+.pm-flex-col-center {
+  @apply flex flex-col items-center gap-4 p-4;
+}
+
+/* 2-Column Layouts */
+.pm-2col {
+  @apply grid grid-cols-2 gap-4 p-4;
+}
+
+.pmr-2col {
+  @apply grid grid-cols-2 gap-4 p-4 rounded-lg;
+}
+
+/* 2-Row Layouts */
+.pm-2row {
+  @apply grid grid-rows-2 gap-4 p-4;
+}
+
+.pmr-2row {
+  @apply grid grid-rows-2 gap-4 p-4 rounded-lg;
+}
+
+/* Responsive Columns */
+.pm-2col-responsive {
+  @apply grid grid-cols-1 sm:grid-cols-2 gap-4 p-4;
+}
+
+.pmr-2col-responsive {
+  @apply grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 rounded-lg;
+}
+
+/* Spacing with Padding Only */
+.pm-padding-xs {
+  @apply px-2 py-1;
+}
+
+.pm-padding-sm {
+  @apply px-4 py-2;
+}
+
+.pm-padding-md {
+  @apply px-6 py-3;
+}
+
+.pm-padding-lg {
+  @apply px-8 py-4;
+}
+
+/* Spacing with Margin Only */
+.pm-margin-xs {
+  @apply mx-2 my-1;
+}
+
+.pm-margin-sm {
+  @apply mx-4 my-2;
+}
+
+.pm-margin-md {
+  @apply mx-6 my-3;
+}
+
+.pm-margin-lg {
+  @apply mx-8 my-4;
+}
+
+/* Flex Centered Containers */
+.pm-flex-center {
+  @apply flex items-center justify-center p-4;
+}
+
+.pmr-flex-center {
+  @apply flex items-center justify-center p-4 rounded-lg;
+}
+
+/* Full-Screen Center */
+.pm-fullscreen-center {
+  @apply flex items-center justify-center w-full h-screen;
+}
+
+.pmr-fullscreen-center {
+  @apply flex items-center justify-center w-full h-screen rounded-lg;
+}
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 3.9%;
+    --primary: 0 0% 9%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 0 0% 96.1%;
+    --secondary-foreground: 0 0% 9%;
+    --muted: 0 0% 96.1%;
+    --muted-foreground: 0 0% 45.1%;
+    --accent: 0 0% 96.1%;
+    --accent-foreground: 0 0% 9%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 89.8%;
+    --input: 0 0% 89.8%;
+    --ring: 0 0% 3.9%;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+    --radius: 0.5rem;
+  }
+  .dark {
+    --background: 0 0% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 9%;
+    --secondary: 0 0% 14.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 14.9%;
+    --muted-foreground: 0 0% 63.9%;
+    --accent: 0 0% 14.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 14.9%;
+    --input: 0 0% 14.9%;
+    --ring: 0 0% 83.1%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }
